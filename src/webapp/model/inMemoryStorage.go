@@ -1,55 +1,5 @@
 package model
 
-var (
-	i1 = Ingredient{
-		Id:              0,
-		Name:            "Patata",
-		ServingsPerWeek: 4,
-	}
-
-	i2 = Ingredient{
-		Id:              1,
-		Name:            "Pollo",
-		ServingsPerWeek: 2,
-	}
-
-	i3 = Ingredient{
-		Id:              2,
-		Name:            "Masa",
-		ServingsPerWeek: 2,
-	}
-
-	ingredients = []Ingredient{i1, i2, i3}
-)
-
-var (
-	meal1 = Meal{
-		Id:             0,
-		Name:           "Tortilla de Patata",
-		MainIngredient: i1,
-		Type:           Both,
-		Servings:       1,
-	}
-
-	meal2 = Meal{
-		Id:             1,
-		Name:           "Fajitas de Pollo",
-		MainIngredient: i2,
-		Type:           Both,
-		Servings:       1,
-	}
-
-	meal3 = Meal{
-		Id:             2,
-		Name:           "Pizzas de Pimientos y Atun",
-		MainIngredient: i3,
-		Type:           Dinner,
-		Servings:       1,
-	}
-
-	meals = []Meal{meal1, meal2, meal3}
-)
-
 func GetAllMeals() []Meal {
 	return meals
 }
