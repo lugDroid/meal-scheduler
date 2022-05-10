@@ -1,0 +1,28 @@
+{{define "content"}}
+{{/* <h5 class="font-weight-light">Main Ingredients List</h5> */}}
+
+    {{if .Ingredients}}
+        <table class="table table-sm table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Servings per Week</th>
+                </tr>
+            </thead>
+    {{else}}
+        <p>You don't have any ingredients yet</p>
+    {{end}}
+
+    {{range .Ingredients}}
+        <tr onclick="location.href ='/ingredients/{{.Id}}'" style="cursor: pointer;">
+            <td>{{.Name}}</td>
+            <td>{{.ServingsPerWeek}}</td>
+        </tr>
+    {{end}}
+    
+    {{if .Ingredients}}
+        </table>
+    {{end}}
+
+    <a href="/ingredients/new" class="btn btn-primary">New Ingredient</a>
+{{end}}

@@ -1,0 +1,51 @@
+{{define "content"}}
+    <p>{{.Meal.Name}}</p>
+
+    <form action="" method="post">
+        <div class="form-group">
+            <label for="">Meal Name</label>
+            <input type="text" name="meal-name" value="{{.Meal.Name}}" class="form-control">
+        </div>      
+
+        <div class="form-group">
+            <label for="">Meal Description</label>
+            <input type="text" name="meal-description" value="{{.Meal.Description}}" class="form-control">
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="">Main Ingredient</label>
+                    <select name="ingredients" id="" class="form-select">
+                        {{range .Ingredients}}
+                        <option value="{{ .Id }}" {{if eq $.Meal.MainIngredient .}}selected{{end}}>
+                            {{ .Name }}
+                        </option>
+                        {{end}}
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="">Servings</label>
+                    <input type="text" name="meal-servings" value="{{.Meal.Servings}}" class="form-control">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="">Time of Day</label>
+                    <select class="form-select "name="meal-type" id="">
+                        {{range $key, $value := .MealTypes}}
+                            <option value="{{ $value }}" {{if eq $.Meal.Type $value}}selected{{end}}>
+                                {{ $key }}
+                            </option>
+                        {{end}}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="javascript:history.go(-1)" class="btn btn-secondary">Cancel</a>
+    </form>
+{{end}}
