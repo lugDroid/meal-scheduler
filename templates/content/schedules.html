@@ -1,0 +1,9 @@
+{{define "content"}}
+    {{if .Schedules}}
+        {{range .Schedules}}
+            <p>{{.Title}}</p>
+        {{end}}
+    {{else}}
+        <p>You don't have any schedules yet</p>
+    {{end}}
+{{end}}

@@ -3,6 +3,7 @@ package model
 type Schedule struct {
 	Id          int
 	UserId      string
+	Title       string
 	LunchMeals  [7]Meal
 	DinnerMeals [7]Meal
 }
