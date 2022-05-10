@@ -1,5 +1,10 @@
 package model
 
+import (
+	"math/rand"
+	"time"
+)
+
 func GetAllMeals() []Meal {
 	return meals
 }
@@ -12,6 +17,16 @@ func GetMealById(id int) Meal {
 	}
 
 	return Meal{}
+}
+
+func GetRandomMeal(mealType MealType) Meal {
+	for {
+		rand.Seed((time.Now().UnixNano()))
+		index := rand.Intn(len(meals))
+		if meals[index].Type == mealType || meals[index].Type == Both {
+			return meals[index]
+		}
+	}
 }
 
 func UpdateMeal(newMeal Meal) Meal {
