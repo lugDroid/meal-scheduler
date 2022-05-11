@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -89,4 +90,32 @@ func AddIngredient(newIngredient Ingredient) []Ingredient {
 	ingredients = append(ingredients, newIngredient)
 
 	return ingredients
+}
+
+func GetAllSchedules() []Schedule {
+	return schedules
+}
+
+func GetScheduleById(id int) Schedule {
+	for _, s := range schedules {
+		if s.Id == id {
+			return s
+		}
+	}
+
+	return Schedule{}
+}
+
+func UpdateSchedule(newSchedule Schedule) Schedule {
+	// To-Do
+	fmt.Println("To Do")
+
+	return Schedule{}
+}
+
+func AddSchedule(newSchedule Schedule) []Schedule {
+	newSchedule.Id = schedules[len(schedules)-1].Id + 1
+	schedules = append(schedules, newSchedule)
+
+	return schedules
 }
