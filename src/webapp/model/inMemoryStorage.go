@@ -108,7 +108,7 @@ func GetScheduleById(id int) Schedule {
 func UpdateSchedule(newSchedule Schedule) Schedule {
 	schedule := GetScheduleById(newSchedule.Id)
 
-	schedule.Title = newSchedule.Title
+	schedule.Name = newSchedule.Name
 	schedule.LunchMeals = newSchedule.LunchMeals
 	schedule.DinnerMeals = newSchedule.DinnerMeals
 

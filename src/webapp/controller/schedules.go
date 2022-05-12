@@ -76,7 +76,7 @@ func parseFormData(schedule *model.Schedule, r *http.Request) {
 		log.Println("Could not parse scheduleDetail form", err)
 	}
 
-	schedule.Title = r.Form.Get("schedule-name")
+	schedule.Name = r.Form.Get("schedule-name")
 	schedule.LunchMeals = parseMeals("lunch-meal", r)
 	schedule.DinnerMeals = parseMeals("dinner-meal", r)
 }
