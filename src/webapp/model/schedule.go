@@ -8,17 +8,9 @@ type Schedule struct {
 	DinnerMeals [7]Meal
 }
 
-func (s Schedule) NewSchedule(meals []Meal) {
+func (s *Schedule) PopulateMeals(meals []Meal) {
 	populate(&s.LunchMeals, Lunch)
 	populate(&s.DinnerMeals, Dinner)
-
-	/* 	for i, l := range s.LunchMeals {
-	   		fmt.Println(i+1, l.Name, ", Servings", l.Servings, ", Type", l.Type.ToString(), l.MainIngredient.Name)
-	   	}
-	   	fmt.Println("##################")
-	   	for i, l := range s.DinnerMeals {
-	   		fmt.Println(i+1, l.Name, ", Servings", l.Servings, ", Type", l.Type.ToString(), l.MainIngredient.Name)
-	   	} */
 }
 
 func populate(list *[7]Meal, mealType MealType) {

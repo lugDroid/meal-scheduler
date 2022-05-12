@@ -1,0 +1,23 @@
+{{define "content"}}
+<form action="" method="post">
+    <div class="form-group">
+        <label for="">Schedule Name</label>
+        <input type="text" name="schedule-name" value="{{.Schedule.Title}}" class="form-control">
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <p>Lunch Meals</p>
+            {{range $i, $m := .Schedule.LunchMeals}}
+                <p>{{ $m.Name}}</p>
+            {{end}}
+        </div>
+        <div class="col">
+            <p>Dinner Meals</p>
+            {{range $i, $m := .Schedule.DinnerMeals}}
+                <p>{{ $m.Name}}</p>
+            {{end}}
+        </div>
+    </div>
+</form>
+{{end}}
