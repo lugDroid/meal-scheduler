@@ -77,17 +77,17 @@ func parseFormData(schedule *model.Schedule, r *http.Request) {
 	}
 
 	schedule.Title = r.Form.Get("schedule-name")
-	schedule.LunchMeals = parseMeals("lunch-meal")
-	schedule.DinnerMeals = parseMeals("dinner-meal")
+	schedule.LunchMeals = parseMeals("lunch-meal", r)
+	schedule.DinnerMeals = parseMeals("dinner-meal", r)
 }
 
-func parseMeals(idText string) [7]model.Meal {
+func parseMeals(idText string, r *http.Request) [7]model.Meal {
 	var mealList [7]model.Meal
 
 	for i := range mealList {
 		fieldName := idText + "-" + strconv.Itoa(i)
 
-		mealId, err := strconv.Atoi(fieldName)
+		mealId, err := strconv.Atoi(r.Form.Get(fieldName))
 		if err != nil {
 			log.Println("Could not parse mealId", err)
 		}
