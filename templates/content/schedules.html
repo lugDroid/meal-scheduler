@@ -1,7 +1,7 @@
 {{define "content"}}
     {{if .Schedules}}
         {{range .Schedules}}
-            <p>{{.Title}}</p>
+            <p onclick="location.href = '/schedules/{{.Id}}'" style="cursor: pointer;">{{.Title}}</p>
         {{end}}
     {{else}}
         <p>You don't have any schedules yet</p>
