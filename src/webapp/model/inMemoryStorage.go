@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 )
@@ -107,14 +106,21 @@ func GetScheduleById(id int) Schedule {
 }
 
 func UpdateSchedule(newSchedule Schedule) Schedule {
-	// To-Do
-	fmt.Println("To Do")
+	schedule := GetScheduleById(newSchedule.Id)
 
-	return Schedule{}
+	schedule.Title = newSchedule.Title
+	schedule.LunchMeals = newSchedule.LunchMeals
+	schedule.DinnerMeals = newSchedule.DinnerMeals
+
+	return schedule
 }
 
 func AddSchedule(newSchedule Schedule) []Schedule {
-	newSchedule.Id = schedules[len(schedules)-1].Id + 1
+	if len(schedules) == 0 {
+		newSchedule.Id = 0
+	} else {
+		newSchedule.Id = schedules[len(schedules)-1].Id + 1
+	}
 	schedules = append(schedules, newSchedule)
 
 	return schedules
