@@ -54,6 +54,14 @@ func AddMeal(newMeal Meal) []Meal {
 	return meals
 }
 
+func RemoveMeal(mealId int) {
+	for i := range meals {
+		if meals[i].Id == mealId {
+			meals = append(meals[:i], meals[i+1:]...)
+		}
+	}
+}
+
 func GetAllIngredients() []Ingredient {
 	return ingredients
 }
@@ -89,6 +97,14 @@ func AddIngredient(newIngredient Ingredient) []Ingredient {
 	ingredients = append(ingredients, newIngredient)
 
 	return ingredients
+}
+
+func RemoveIngredient(ingredientId int32) {
+	for i := range ingredients {
+		if ingredients[i].Id == ingredientId {
+			ingredients = append(ingredients[:i], ingredients[i+1:]...)
+		}
+	}
 }
 
 func GetAllSchedules() []Schedule {
@@ -130,4 +146,12 @@ func AddSchedule(newSchedule Schedule) []Schedule {
 	schedules = append(schedules, newSchedule)
 
 	return schedules
+}
+
+func RemoveSchedule(scheduleId int) {
+	for i := range schedules {
+		if schedules[i].Id == scheduleId {
+			schedules = append(schedules[:i], schedules[i+1:]...)
+		}
+	}
 }
