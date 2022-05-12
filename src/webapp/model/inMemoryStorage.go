@@ -38,7 +38,7 @@ func UpdateMeal(newMeal Meal) Meal {
 	meal.Servings = newMeal.Servings
 	meal.Type = newMeal.Type
 
-	for i := 0; i < len(meals); i++ {
+	for i := range meals {
 		if meals[i].Id == meal.Id {
 			meals[i] = meal
 		}
@@ -75,7 +75,7 @@ func UpdateIngredient(newIngredient Ingredient) Ingredient {
 	ingredient.Description = newIngredient.Description
 	ingredient.ServingsPerWeek = newIngredient.ServingsPerWeek
 
-	for i := 0; i < len(ingredients); i++ {
+	for i := range ingredients {
 		if ingredients[i].Id == ingredient.Id {
 			ingredients[i] = ingredient
 		}
@@ -111,6 +111,12 @@ func UpdateSchedule(newSchedule Schedule) Schedule {
 	schedule.Title = newSchedule.Title
 	schedule.LunchMeals = newSchedule.LunchMeals
 	schedule.DinnerMeals = newSchedule.DinnerMeals
+
+	for i := range schedules {
+		if schedules[i].Id == schedule.Id {
+			schedules[i] = schedule
+		}
+	}
 
 	return schedule
 }
