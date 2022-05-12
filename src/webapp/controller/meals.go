@@ -79,7 +79,7 @@ func parseMealData(meal *model.Meal, r *http.Request) {
 	if err != nil {
 		log.Println("Could not parse ingredientId", err)
 	}
-	meal.MainIngredient = model.GetIngredientById(int32(ingredientId))
+	meal.MainIngredient = model.GetIngredientById(ingredientId)
 
 	mealServings, err := strconv.Atoi(r.Form.Get("meal-servings"))
 	if err != nil {

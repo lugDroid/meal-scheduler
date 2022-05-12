@@ -66,7 +66,7 @@ func GetAllIngredients() []Ingredient {
 	return ingredients
 }
 
-func GetIngredientById(id int32) Ingredient {
+func GetIngredientById(id int) Ingredient {
 	for _, i := range ingredients {
 		if i.Id == id {
 			return i
@@ -99,7 +99,7 @@ func AddIngredient(newIngredient Ingredient) []Ingredient {
 	return ingredients
 }
 
-func RemoveIngredient(ingredientId int32) {
+func RemoveIngredient(ingredientId int) {
 	for i := range ingredients {
 		if ingredients[i].Id == ingredientId {
 			ingredients = append(ingredients[:i], ingredients[i+1:]...)

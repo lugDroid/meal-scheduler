@@ -1,7 +1,7 @@
 package model
 
 type Ingredient struct {
-	Id              int32
+	Id              int
 	UserId          string
 	Name            string
 	Description     string

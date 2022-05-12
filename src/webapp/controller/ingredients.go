@@ -25,7 +25,7 @@ func (i ingredients) handleIngredients(w http.ResponseWriter, r *http.Request) {
 	idMatches := idPattern.FindStringSubmatch(r.URL.Path)
 	if len(idMatches) > 0 {
 		ingredientId, _ := strconv.Atoi(idMatches[1])
-		i.handleDetail(w, r, int32(ingredientId))
+		i.handleDetail(w, r, ingredientId)
 		return
 	}
 
@@ -42,7 +42,7 @@ func (i ingredients) handleIngredients(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (i ingredients) handleDetail(w http.ResponseWriter, r *http.Request, ingredientId int32) {
+func (i ingredients) handleDetail(w http.ResponseWriter, r *http.Request, ingredientId int) {
 	ingredient := model.GetIngredientById(ingredientId)
 
 	if r.Method == http.MethodPost {
