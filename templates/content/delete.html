@@ -1,0 +1,12 @@
+{{define "content"}}
+<h3>Delete {{ .Content }}</h3>
+
+<div class="alert alert-danger">
+    Are you sure you want to delete {{ .Content }} {{ .Name }}?
+</div>
+
+<form action="" method="post">
+    <button type="submit" class="btn btn-danger">Yes</button>
+    <a href="{{ .ReturnPath }}" class="btn btn-default">Cancel</a>
+</form>
+{{end}}

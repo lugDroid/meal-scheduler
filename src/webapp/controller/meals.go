@@ -11,8 +11,9 @@ import (
 )
 
 type meals struct {
-	mealsTemplate      *template.Template
-	mealDetailTemplate *template.Template
+	listTemplate   *template.Template
+	detailTemplate *template.Template
+	deleteTemplate *template.Template
 }
 
 func (m meals) registerRoutes() {
@@ -37,9 +38,20 @@ func (m meals) handleMeals(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	deletePattern, _ := regexp.Compile(`/meals/delete/(\d+)`)
+	deleteMatches := deletePattern.FindStringSubmatch(r.URL.Path)
+	if len(deleteMatches) > 0 {
+		mealId, _ := strconv.Atoi(deleteMatches[1])
+		m.handleDelete(w, r, mealId)
+		return
+	}
+
 	meals := model.GetAllMeals()
 	vm := viewmodel.NewMeals(meals)
-	m.mealsTemplate.Execute(w, vm)
+	err := m.listTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", m.listTemplate.Name(), err)
+	}
 }
 
 func (m meals) handleDetail(w http.ResponseWriter, r *http.Request, mealId int) {
@@ -52,7 +64,10 @@ func (m meals) handleDetail(w http.ResponseWriter, r *http.Request, mealId int) 
 	}
 
 	vm := viewmodel.NewMealDetail(meal)
-	m.mealDetailTemplate.Execute(w, vm)
+	err := m.detailTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", m.detailTemplate.Name(), err)
+	}
 }
 
 func (m meals) handleNew(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +78,24 @@ func (m meals) handleNew(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/meals", http.StatusTemporaryRedirect)
 	}
 	vm := viewmodel.NewMealDetail(model.Meal{})
-	m.mealDetailTemplate.Execute(w, vm)
+	err := m.detailTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", m.detailTemplate.Name(), err)
+	}
+}
+
+func (m meals) handleDelete(w http.ResponseWriter, r *http.Request, mealId int) {
+	if r.Method == http.MethodPost {
+		model.RemoveMeal(mealId)
+		http.Redirect(w, r, "/meals", http.StatusTemporaryRedirect)
+	}
+
+	vm := viewmodel.NewDeleteViewModel("meal", model.GetMealById(mealId).Name, "/meals")
+	vm.Active = "schedules"
+	err := m.deleteTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", m.deleteTemplate.Name(), err)
+	}
 }
 
 func parseMealData(meal *model.Meal, r *http.Request) {

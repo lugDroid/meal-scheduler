@@ -11,8 +11,9 @@ import (
 )
 
 type ingredients struct {
-	ingredientsTemplate      *template.Template
-	ingredientDetailTemplate *template.Template
+	listTemplate   *template.Template
+	detailTemplate *template.Template
+	deleteTemplate *template.Template
 }
 
 func (i ingredients) registerRoutes() {
@@ -36,10 +37,20 @@ func (i ingredients) handleIngredients(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	deletePattern, _ := regexp.Compile(`/ingredients/delete/(\d+)`)
+	deleteMatches := deletePattern.FindStringSubmatch(r.URL.Path)
+	if len(deleteMatches) > 0 {
+		ingredientId, _ := strconv.Atoi(deleteMatches[1])
+		i.handleDelete(w, r, ingredientId)
+		return
+	}
+
 	ingredients := model.GetAllIngredients()
 	vm := viewmodel.NewIngredients(ingredients)
-	i.ingredientsTemplate.Execute(w, vm)
-
+	err := i.listTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", i.listTemplate.Name(), err)
+	}
 }
 
 func (i ingredients) handleDetail(w http.ResponseWriter, r *http.Request, ingredientId int) {
@@ -52,7 +63,10 @@ func (i ingredients) handleDetail(w http.ResponseWriter, r *http.Request, ingred
 	}
 
 	vm := viewmodel.NewIngredientDetail(ingredient)
-	i.ingredientDetailTemplate.Execute(w, vm)
+	err := i.detailTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", i.detailTemplate.Name(), err)
+	}
 }
 
 func (i ingredients) handleNew(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +77,23 @@ func (i ingredients) handleNew(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/ingredients", http.StatusTemporaryRedirect)
 	}
 	vm := viewmodel.NewIngredientDetail(model.Ingredient{})
-	i.ingredientDetailTemplate.Execute(w, vm)
+	err := i.detailTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", i.detailTemplate.Name(), err)
+	}
+}
+
+func (i ingredients) handleDelete(w http.ResponseWriter, r *http.Request, ingredientId int) {
+	if r.Method == http.MethodPost {
+		model.RemoveIngredient(ingredientId)
+		http.Redirect(w, r, "/ingredients", http.StatusTemporaryRedirect)
+	}
+
+	vm := viewmodel.NewDeleteViewModel("ingredient", model.GetIngredientById(ingredientId).Name, "/ingredients")
+	err := i.deleteTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", i.deleteTemplate.Name(), err)
+	}
 }
 
 func parseIngredientData(i *model.Ingredient, r *http.Request) {

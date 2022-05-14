@@ -11,8 +11,9 @@ import (
 )
 
 type schedules struct {
-	schedulesTemplate      *template.Template
-	scheduleDetailTemplate *template.Template
+	listTemplate   *template.Template
+	detailTemplate *template.Template
+	deleteTemplate *template.Template
 }
 
 func (s schedules) registerRoutes() {
@@ -36,10 +37,21 @@ func (s schedules) handleSchedules(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	deletePattern, _ := regexp.Compile(`/schedules/delete/(\d+)`)
+	deleteMatches := deletePattern.FindStringSubmatch(r.URL.Path)
+	if len(deleteMatches) > 0 {
+		scheduleId, _ := strconv.Atoi(deleteMatches[1])
+		s.handleDelete(w, r, scheduleId)
+		return
+	}
+
 	schedules := model.GetAllSchedules()
 
 	vm := viewmodel.NewSchedules(schedules)
-	s.schedulesTemplate.Execute(w, vm)
+	err := s.listTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", s.listTemplate.Name(), err)
+	}
 }
 
 func (s schedules) handleDetail(w http.ResponseWriter, r *http.Request, scheduleId int) {
@@ -52,7 +64,23 @@ func (s schedules) handleDetail(w http.ResponseWriter, r *http.Request, schedule
 	}
 
 	vm := viewmodel.NewScheduleDetail(schedule, model.GetAllMeals())
-	s.scheduleDetailTemplate.Execute(w, vm)
+	err := s.detailTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", s.detailTemplate.Name(), err)
+	}
+}
+
+func (s schedules) handleDelete(w http.ResponseWriter, r *http.Request, scheduleId int) {
+	if r.Method == http.MethodPost {
+		model.RemoveSchedule(scheduleId)
+		http.Redirect(w, r, "/schedules", http.StatusTemporaryRedirect)
+	}
+
+	vm := viewmodel.NewDeleteViewModel("schedule", model.GetScheduleById(scheduleId).Name, "/schedules")
+	err := s.deleteTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", s.deleteTemplate.Name(), err)
+	}
 }
 
 func (s schedules) handleNew(w http.ResponseWriter, r *http.Request) {
@@ -63,11 +91,15 @@ func (s schedules) handleNew(w http.ResponseWriter, r *http.Request) {
 		parseFormData(&schedule, r)
 		model.AddSchedule(schedule)
 		http.Redirect(w, r, "/schedules", http.StatusTemporaryRedirect)
+		return
 	}
 
 	schedule.PopulateMeals(meals)
 	vm := viewmodel.NewScheduleDetail(schedule, meals)
-	s.scheduleDetailTemplate.Execute(w, vm)
+	err := s.detailTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", s.detailTemplate.Name(), err)
+	}
 }
 
 func parseFormData(schedule *model.Schedule, r *http.Request) {

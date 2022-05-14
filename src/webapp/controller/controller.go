@@ -12,12 +12,17 @@ var (
 )
 
 func StartUp(templates map[string]*template.Template) {
-	mealsController.mealsTemplate = templates["meals.html"]
-	mealsController.mealDetailTemplate = templates["meal-detail.html"]
-	ingredientsController.ingredientsTemplate = templates["ingredients.html"]
-	ingredientsController.ingredientDetailTemplate = templates["ingredient-detail.html"]
-	schedulesController.schedulesTemplate = templates["schedules.html"]
-	schedulesController.scheduleDetailTemplate = templates["schedule-detail.html"]
+	mealsController.listTemplate = templates["meals.html"]
+	mealsController.detailTemplate = templates["meal-detail.html"]
+	mealsController.deleteTemplate = templates["delete.html"]
+
+	ingredientsController.listTemplate = templates["ingredients.html"]
+	ingredientsController.detailTemplate = templates["ingredient-detail.html"]
+	ingredientsController.deleteTemplate = templates["delete.html"]
+
+	schedulesController.listTemplate = templates["schedules.html"]
+	schedulesController.detailTemplate = templates["schedule-detail.html"]
+	schedulesController.deleteTemplate = templates["delete.html"]
 
 	mealsController.registerRoutes()
 	ingredientsController.registerRoutes()
