@@ -55,7 +55,7 @@ func AddMeal(newMeal Meal) []Meal {
 }
 
 func DeleteMeal(mealId int) {
-	for i := range meals {
+	for i := 0; i < len(meals); i++ {
 		if meals[i].Id == mealId {
 			meals = append(meals[:i], meals[i+1:]...)
 		}
@@ -100,7 +100,7 @@ func AddCategory(newCategory Category) []Category {
 }
 
 func DeleteCategory(categoryId int) {
-	for i := range categories {
+	for i := 0; i < len(categories); i++ {
 		if categories[i].Id == categoryId {
 			categories = append(categories[:i], categories[i+1:]...)
 		}
@@ -149,7 +149,7 @@ func AddSchedule(newSchedule Schedule) []Schedule {
 }
 
 func DeleteSchedule(scheduleId int) {
-	for i := range schedules {
+	for i := 0; i < len(schedules); i++ {
 		if schedules[i].Id == scheduleId {
 			schedules = append(schedules[:i], schedules[i+1:]...)
 		}
