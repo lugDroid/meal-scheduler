@@ -61,6 +61,7 @@ func (m meals) handleDetail(w http.ResponseWriter, r *http.Request, mealId int) 
 		parseMealData(&meal, r)
 		model.UpdateMeal(meal)
 		http.Redirect(w, r, "/meals", http.StatusTemporaryRedirect)
+		return
 	}
 
 	vm := viewmodel.NewMealDetail(meal)
@@ -76,6 +77,7 @@ func (m meals) handleNew(w http.ResponseWriter, r *http.Request) {
 		parseMealData(&newMeal, r)
 		model.AddMeal(newMeal)
 		http.Redirect(w, r, "/meals", http.StatusTemporaryRedirect)
+		return
 	}
 	vm := viewmodel.NewMealDetail(model.Meal{})
 	err := m.detailTemplate.Execute(w, vm)
@@ -88,6 +90,7 @@ func (m meals) handleDelete(w http.ResponseWriter, r *http.Request, mealId int) 
 	if r.Method == http.MethodPost {
 		model.RemoveMeal(mealId)
 		http.Redirect(w, r, "/meals", http.StatusTemporaryRedirect)
+		return
 	}
 
 	vm := viewmodel.NewDeleteViewModel("meal", model.GetMealById(mealId).Name, "/meals")

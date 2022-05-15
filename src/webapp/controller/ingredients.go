@@ -60,6 +60,7 @@ func (i ingredients) handleDetail(w http.ResponseWriter, r *http.Request, ingred
 		parseIngredientData(&ingredient, r)
 		model.UpdateIngredient(ingredient)
 		http.Redirect(w, r, "/ingredients", http.StatusTemporaryRedirect)
+		return
 	}
 
 	vm := viewmodel.NewIngredientDetail(ingredient)
@@ -75,7 +76,9 @@ func (i ingredients) handleNew(w http.ResponseWriter, r *http.Request) {
 		parseIngredientData(&newIngredient, r)
 		model.AddIngredient(newIngredient)
 		http.Redirect(w, r, "/ingredients", http.StatusTemporaryRedirect)
+		return
 	}
+
 	vm := viewmodel.NewIngredientDetail(model.Ingredient{})
 	err := i.detailTemplate.Execute(w, vm)
 	if err != nil {
@@ -87,6 +90,7 @@ func (i ingredients) handleDelete(w http.ResponseWriter, r *http.Request, ingred
 	if r.Method == http.MethodPost {
 		model.RemoveIngredient(ingredientId)
 		http.Redirect(w, r, "/ingredients", http.StatusTemporaryRedirect)
+		return
 	}
 
 	vm := viewmodel.NewDeleteViewModel("ingredient", model.GetIngredientById(ingredientId).Name, "/ingredients")

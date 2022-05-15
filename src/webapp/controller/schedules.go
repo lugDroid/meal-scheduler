@@ -61,6 +61,7 @@ func (s schedules) handleDetail(w http.ResponseWriter, r *http.Request, schedule
 		parseFormData(&schedule, r)
 		model.UpdateSchedule(schedule)
 		http.Redirect(w, r, "/schedules", http.StatusTemporaryRedirect)
+		return
 	}
 
 	vm := viewmodel.NewScheduleDetail(schedule, model.GetAllMeals())
@@ -74,6 +75,7 @@ func (s schedules) handleDelete(w http.ResponseWriter, r *http.Request, schedule
 	if r.Method == http.MethodPost {
 		model.RemoveSchedule(scheduleId)
 		http.Redirect(w, r, "/schedules", http.StatusTemporaryRedirect)
+		return
 	}
 
 	vm := viewmodel.NewDeleteViewModel("schedule", model.GetScheduleById(scheduleId).Name, "/schedules")
