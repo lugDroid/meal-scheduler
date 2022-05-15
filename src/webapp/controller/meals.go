@@ -93,8 +93,12 @@ func (m meals) handleDelete(w http.ResponseWriter, r *http.Request, mealId int) 
 		return
 	}
 
-	vm := viewmodel.NewDeleteViewModel("meal", model.GetMealById(mealId).Name, "/meals")
-	vm.Active = "schedules"
+	vm := viewmodel.NewDeleteViewModel()
+	vm.Active = "meals"
+	vm.Content = "meal"
+	vm.Name = model.GetMealById(mealId).Name
+	vm.ReturnPath = "/meals"
+
 	err := m.deleteTemplate.Execute(w, vm)
 	if err != nil {
 		log.Println("Could not execute template", m.deleteTemplate.Name(), err)

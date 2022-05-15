@@ -93,7 +93,12 @@ func (c categories) handleDelete(w http.ResponseWriter, r *http.Request, categor
 		return
 	}
 
-	vm := viewmodel.NewDeleteViewModel("category", model.GetCategoryById(categoryId).Name, "/categories")
+	vm := viewmodel.NewDeleteViewModel()
+	vm.Active = "categories"
+	vm.Content = "category"
+	vm.Name = model.GetCategoryById(categoryId).Name
+	vm.ReturnPath = "/categories"
+
 	err := c.deleteTemplate.Execute(w, vm)
 	if err != nil {
 		log.Println("Could not execute template", c.deleteTemplate.Name(), err)

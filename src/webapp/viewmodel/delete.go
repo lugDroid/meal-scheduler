@@ -8,11 +8,8 @@ type DeleteViewModel struct {
 	ReturnPath string
 }
 
-func NewDeleteViewModel(content string, name string, returnPath string) DeleteViewModel {
+func NewDeleteViewModel() DeleteViewModel {
 	return DeleteViewModel{
-		Title:      "Meal Scheduler - Delete",
-		Content:    content,
-		Name:       name,
-		ReturnPath: returnPath,
+		Title: "Meal Scheduler - Delete",
 	}
 }

@@ -78,7 +78,12 @@ func (s schedules) handleDelete(w http.ResponseWriter, r *http.Request, schedule
 		return
 	}
 
-	vm := viewmodel.NewDeleteViewModel("schedule", model.GetScheduleById(scheduleId).Name, "/schedules")
+	vm := viewmodel.NewDeleteViewModel()
+	vm.Active = "schedules"
+	vm.Content = "schedule"
+	vm.Name = model.GetScheduleById(scheduleId).Name
+	vm.ReturnPath = "/schedules"
+
 	err := s.deleteTemplate.Execute(w, vm)
 	if err != nil {
 		log.Println("Could not execute template", s.deleteTemplate.Name(), err)
