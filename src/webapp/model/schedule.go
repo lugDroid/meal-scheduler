@@ -25,8 +25,8 @@ out:
 			}
 		}
 
-		usedAlready := getIngredientUses(selectedMeal.MainIngredient, *list)
-		if usedAlready >= selectedMeal.MainIngredient.ServingsPerWeek {
+		usedAlready := getCategoryUses(selectedMeal.Category, *list)
+		if usedAlready >= selectedMeal.Category.ServingsPerWeek {
 			continue
 		}
 
@@ -42,11 +42,11 @@ out:
 	}
 }
 
-func getIngredientUses(i Ingredient, list [7]Meal) int {
+func getCategoryUses(c Category, list [7]Meal) int {
 	count := 0
 
 	for _, m := range list {
-		if m.MainIngredient.Name == i.Name {
+		if m.Category.Name == c.Name {
 			count++
 		}
 	}

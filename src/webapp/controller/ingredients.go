@@ -10,108 +10,108 @@ import (
 	"strconv"
 )
 
-type ingredients struct {
+type categories struct {
 	listTemplate   *template.Template
 	detailTemplate *template.Template
 	deleteTemplate *template.Template
 }
 
-func (i ingredients) registerRoutes() {
-	http.HandleFunc("/ingredients", i.handleIngredients)
-	http.HandleFunc("/ingredients/", i.handleIngredients)
+func (c categories) registerRoutes() {
+	http.HandleFunc("/categories", c.handleCategories)
+	http.HandleFunc("/categories/", c.handleCategories)
 }
 
-func (i ingredients) handleIngredients(w http.ResponseWriter, r *http.Request) {
-	idPattern, _ := regexp.Compile(`/ingredients/(\d+)`)
+func (c categories) handleCategories(w http.ResponseWriter, r *http.Request) {
+	idPattern, _ := regexp.Compile(`/categories/(\d+)`)
 	idMatches := idPattern.FindStringSubmatch(r.URL.Path)
 	if len(idMatches) > 0 {
-		ingredientId, _ := strconv.Atoi(idMatches[1])
-		i.handleDetail(w, r, ingredientId)
+		categoryId, _ := strconv.Atoi(idMatches[1])
+		c.handleDetail(w, r, categoryId)
 		return
 	}
 
-	newPattern, _ := regexp.Compile(`/ingredients/new$`)
+	newPattern, _ := regexp.Compile(`/categories/new$`)
 	newMatches := newPattern.FindStringSubmatch(r.URL.Path)
 	if len(newMatches) > 0 {
-		i.handleNew(w, r)
+		c.handleNew(w, r)
 		return
 	}
 
-	deletePattern, _ := regexp.Compile(`/ingredients/delete/(\d+)`)
+	deletePattern, _ := regexp.Compile(`/categories/delete/(\d+)`)
 	deleteMatches := deletePattern.FindStringSubmatch(r.URL.Path)
 	if len(deleteMatches) > 0 {
-		ingredientId, _ := strconv.Atoi(deleteMatches[1])
-		i.handleDelete(w, r, ingredientId)
+		categoryId, _ := strconv.Atoi(deleteMatches[1])
+		c.handleDelete(w, r, categoryId)
 		return
 	}
 
-	ingredients := model.GetAllIngredients()
-	vm := viewmodel.NewIngredients(ingredients)
-	err := i.listTemplate.Execute(w, vm)
+	categories := model.GetAllCategories()
+	vm := viewmodel.NewCategories(categories)
+	err := c.listTemplate.Execute(w, vm)
 	if err != nil {
-		log.Println("Could not execute template", i.listTemplate.Name(), err)
+		log.Println("Could not execute template", c.listTemplate.Name(), err)
 	}
 }
 
-func (i ingredients) handleDetail(w http.ResponseWriter, r *http.Request, ingredientId int) {
-	ingredient := model.GetIngredientById(ingredientId)
+func (c categories) handleDetail(w http.ResponseWriter, r *http.Request, categoryId int) {
+	category := model.GetCategoryById(categoryId)
 
 	if r.Method == http.MethodPost {
-		parseIngredientData(&ingredient, r)
-		model.UpdateIngredient(ingredient)
-		http.Redirect(w, r, "/ingredients", http.StatusTemporaryRedirect)
+		parseCategoryData(&category, r)
+		model.UpdateCategory(category)
+		http.Redirect(w, r, "/categories", http.StatusTemporaryRedirect)
 		return
 	}
 
-	vm := viewmodel.NewIngredientDetail(ingredient)
+	vm := viewmodel.NewCategoryDetail(category)
+	err := c.detailTemplate.Execute(w, vm)
+	if err != nil {
+		log.Println("Could not execute template", c.detailTemplate.Name(), err)
+	}
+}
+
+func (i categories) handleNew(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		var newCategory model.Category
+		parseCategoryData(&newCategory, r)
+		model.AddCategory(newCategory)
+		http.Redirect(w, r, "/categories", http.StatusTemporaryRedirect)
+		return
+	}
+
+	vm := viewmodel.NewCategoryDetail(model.Category{})
 	err := i.detailTemplate.Execute(w, vm)
 	if err != nil {
 		log.Println("Could not execute template", i.detailTemplate.Name(), err)
 	}
 }
 
-func (i ingredients) handleNew(w http.ResponseWriter, r *http.Request) {
+func (c categories) handleDelete(w http.ResponseWriter, r *http.Request, categoryId int) {
 	if r.Method == http.MethodPost {
-		var newIngredient model.Ingredient
-		parseIngredientData(&newIngredient, r)
-		model.AddIngredient(newIngredient)
-		http.Redirect(w, r, "/ingredients", http.StatusTemporaryRedirect)
+		model.DeleteCategory(categoryId)
+		http.Redirect(w, r, "/categories", http.StatusTemporaryRedirect)
 		return
 	}
 
-	vm := viewmodel.NewIngredientDetail(model.Ingredient{})
-	err := i.detailTemplate.Execute(w, vm)
+	vm := viewmodel.NewDeleteViewModel("category", model.GetCategoryById(categoryId).Name, "/categories")
+	err := c.deleteTemplate.Execute(w, vm)
 	if err != nil {
-		log.Println("Could not execute template", i.detailTemplate.Name(), err)
+		log.Println("Could not execute template", c.deleteTemplate.Name(), err)
 	}
 }
 
-func (i ingredients) handleDelete(w http.ResponseWriter, r *http.Request, ingredientId int) {
-	if r.Method == http.MethodPost {
-		model.DeleteIngredient(ingredientId)
-		http.Redirect(w, r, "/ingredients", http.StatusTemporaryRedirect)
-		return
-	}
-
-	vm := viewmodel.NewDeleteViewModel("ingredient", model.GetIngredientById(ingredientId).Name, "/ingredients")
-	err := i.deleteTemplate.Execute(w, vm)
-	if err != nil {
-		log.Println("Could not execute template", i.deleteTemplate.Name(), err)
-	}
-}
-
-func parseIngredientData(i *model.Ingredient, r *http.Request) {
+func parseCategoryData(c *model.Category, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		log.Print("Could not parse ingredientDetail form", err)
+		log.Print("Could not parse categoryDetail form", err)
 	}
 
-	i.Name = r.Form.Get("ingredient-name")
-	i.Description = r.Form.Get("ingredient-desc")
+	c.Name = r.Form.Get("category-name")
+	c.Description = r.Form.Get("category-desc")
 
-	ingredientServings, err := strconv.Atoi(r.Form.Get("ingredient-servings"))
+	categoryServings, err := strconv.Atoi(r.Form.Get("category-servings"))
 	if err != nil {
-		log.Println("Could not parse ingredientServings", err)
+		log.Println("Could not parse categoryServings", err)
 	}
-	i.ServingsPerWeek = ingredientServings
+	c.ServingsPerWeek = categoryServings
 }

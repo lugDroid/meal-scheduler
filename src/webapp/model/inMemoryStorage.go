@@ -34,7 +34,7 @@ func UpdateMeal(newMeal Meal) Meal {
 
 	meal.Name = newMeal.Name
 	meal.Description = newMeal.Description
-	meal.MainIngredient = newMeal.MainIngredient
+	meal.Category = newMeal.Category
 	meal.Servings = newMeal.Servings
 	meal.Type = newMeal.Type
 
@@ -62,47 +62,47 @@ func DeleteMeal(mealId int) {
 	}
 }
 
-func GetAllIngredients() []Ingredient {
-	return ingredients
+func GetAllCategories() []Category {
+	return categories
 }
 
-func GetIngredientById(id int) Ingredient {
-	for _, i := range ingredients {
-		if i.Id == id {
-			return i
+func GetCategoryById(id int) Category {
+	for _, c := range categories {
+		if c.Id == id {
+			return c
 		}
 	}
 
-	return Ingredient{}
+	return Category{}
 }
 
-func UpdateIngredient(newIngredient Ingredient) Ingredient {
-	ingredient := GetIngredientById(newIngredient.Id)
+func UpdateCategory(newCategory Category) Category {
+	category := GetCategoryById(newCategory.Id)
 
-	ingredient.Name = newIngredient.Name
-	ingredient.Description = newIngredient.Description
-	ingredient.ServingsPerWeek = newIngredient.ServingsPerWeek
+	category.Name = newCategory.Name
+	category.Description = newCategory.Description
+	category.ServingsPerWeek = newCategory.ServingsPerWeek
 
-	for i := range ingredients {
-		if ingredients[i].Id == ingredient.Id {
-			ingredients[i] = ingredient
+	for i := range categories {
+		if categories[i].Id == category.Id {
+			categories[i] = category
 		}
 	}
 
-	return ingredient
+	return category
 }
 
-func AddIngredient(newIngredient Ingredient) []Ingredient {
-	newIngredient.Id = ingredients[len(ingredients)-1].Id + 1
-	ingredients = append(ingredients, newIngredient)
+func AddCategory(newCategory Category) []Category {
+	newCategory.Id = categories[len(categories)-1].Id + 1
+	categories = append(categories, newCategory)
 
-	return ingredients
+	return categories
 }
 
-func DeleteIngredient(ingredientId int) {
-	for i := range ingredients {
-		if ingredients[i].Id == ingredientId {
-			ingredients = append(ingredients[:i], ingredients[i+1:]...)
+func DeleteCategory(categoryId int) {
+	for i := range categories {
+		if categories[i].Id == categoryId {
+			categories = append(categories[:i], categories[i+1:]...)
 		}
 	}
 }

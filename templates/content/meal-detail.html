@@ -15,10 +15,10 @@
         <div class="row">
             <div class="col">
                 <div class="form-group">
-                    <label for="">Main Ingredient</label>
-                    <select name="ingredients" id="" class="form-select">
-                        {{range .Ingredients}}
-                        <option value="{{ .Id }}" {{if eq $.Meal.MainIngredient .}}selected{{end}}>
+                    <label for="">Main Category</label>
+                    <select name="categories" id="" class="form-select">
+                        {{range .Categories}}
+                        <option value="{{ .Id }}" {{if eq $.Meal.Category .}}selected{{end}}>
                             {{ .Name }}
                         </option>
                         {{end}}

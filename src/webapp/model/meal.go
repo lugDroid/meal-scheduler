@@ -1,11 +1,11 @@
 package model
 
 type Meal struct {
-	Id             int
-	UserId         string
-	Name           string
-	Description    string
-	Servings       int
-	MainIngredient Ingredient
-	Type           MealType
+	Id          int
+	UserId      string
+	Name        string
+	Description string
+	Servings    int
+	Category    Category
+	Type        MealType
 }

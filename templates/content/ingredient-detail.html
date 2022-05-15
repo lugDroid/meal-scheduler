@@ -1,22 +1,22 @@
 {{define "content"}}
-<p>{{.Ingredient.Name}}</p>
+<p>{{.Category.Name}}</p>
 
 <form action="" method="post">
     <div class="form-group">
-        <label for="">Ingredient Name</label>
-        <input type="text" name="ingredient-name" value="{{.Ingredient.Name}}" class="form-control">
+        <label for="">Category Name</label>
+        <input type="text" name="category-name" value="{{.Category.Name}}" class="form-control">
     </div>
 
     <div class="form-group">
-        <label for="">Ingredient Description</label>
-        <input type="text" name="ingredient-desc" value="{{.Ingredient.Description}}" class="form-control">
+        <label for="">Category Description</label>
+        <input type="text" name="category-desc" value="{{.Category.Description}}" class="form-control">
     </div>
 
     <div class="row">
         <div class="col">
             <div class="form-group">
                 <label for="">Servings Per Week</label>
-                <input type="text" name="ingredient-servings" value="{{.Ingredient.ServingsPerWeek}}" class="form-control">
+                <input type="text" name="category-servings" value="{{.Category.ServingsPerWeek}}" class="form-control">
             </div>
         </div>
         <div class="col"></div>
@@ -24,7 +24,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
-    <a href="/ingredients/delete/{{.Ingredient.Id}}" class="btn btn-danger">Delete</a>
+    <a href="/categories/delete/{{.Category.Id}}" class="btn btn-danger">Delete</a>
     <a href="javascript:history.go(-1)" class="btn btn-secondary">Cancel</a>
 </form>
 {{end}}

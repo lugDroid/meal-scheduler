@@ -110,11 +110,11 @@ func parseMealData(meal *model.Meal, r *http.Request) {
 	meal.Name = r.Form.Get("meal-name")
 	meal.Description = r.Form.Get("meal-description")
 
-	ingredientId, err := strconv.Atoi(r.Form.Get("ingredients"))
+	categoryId, err := strconv.Atoi(r.Form.Get("categories"))
 	if err != nil {
-		log.Println("Could not parse ingredientId", err)
+		log.Println("Could not parse categoryId", err)
 	}
-	meal.MainIngredient = model.GetIngredientById(ingredientId)
+	meal.Category = model.GetCategoryById(categoryId)
 
 	mealServings, err := strconv.Atoi(r.Form.Get("meal-servings"))
 	if err != nil {

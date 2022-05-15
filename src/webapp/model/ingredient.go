@@ -1,6 +1,6 @@
 package model
 
-type Ingredient struct {
+type Category struct {
 	Id              int
 	UserId          string
 	Name            string

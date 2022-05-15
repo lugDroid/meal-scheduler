@@ -6,9 +6,9 @@ import (
 )
 
 var (
-	mealsController       meals
-	ingredientsController ingredients
-	schedulesController   schedules
+	mealsController      meals
+	categoriesController categories
+	schedulesController  schedules
 )
 
 func StartUp(templates map[string]*template.Template) {
@@ -16,16 +16,16 @@ func StartUp(templates map[string]*template.Template) {
 	mealsController.detailTemplate = templates["meal-detail.html"]
 	mealsController.deleteTemplate = templates["delete.html"]
 
-	ingredientsController.listTemplate = templates["ingredients.html"]
-	ingredientsController.detailTemplate = templates["ingredient-detail.html"]
-	ingredientsController.deleteTemplate = templates["delete.html"]
+	categoriesController.listTemplate = templates["ingredients.html"]
+	categoriesController.detailTemplate = templates["ingredient-detail.html"]
+	categoriesController.deleteTemplate = templates["delete.html"]
 
 	schedulesController.listTemplate = templates["schedules.html"]
 	schedulesController.detailTemplate = templates["schedule-detail.html"]
 	schedulesController.deleteTemplate = templates["delete.html"]
 
 	mealsController.registerRoutes()
-	ingredientsController.registerRoutes()
+	categoriesController.registerRoutes()
 	schedulesController.registerRoutes()
 
 	http.Handle("/img/", http.FileServer(http.Dir("../../public")))

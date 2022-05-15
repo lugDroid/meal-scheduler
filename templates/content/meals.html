@@ -7,7 +7,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Servings</th>
-                    <th>Main Ingredient</th>
+                    <th>Main Category</th>
                     <th>Type</th>
                 </tr>
             </thead>
@@ -19,7 +19,7 @@
         <tr onclick="location.href ='/meals/{{.Id}}'" style="cursor: pointer;">
             <td>{{.Name}}</td>
             <td>{{.Servings}}</td>
-            <td>{{.MainIngredient.Name}}</td>
+            <td>{{.Category.Name}}</td>
             <td>{{.Type.ToString}}</td>
         </tr>
     {{end}}

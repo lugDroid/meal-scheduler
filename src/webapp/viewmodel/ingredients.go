@@ -2,16 +2,16 @@ package viewmodel
 
 import "lugdroid/mealsScheduler/webapp/model"
 
-type Ingredients struct {
-	Title       string
-	Ingredients []model.Ingredient
-	Active      string
+type Categories struct {
+	Title      string
+	Categories []model.Category
+	Active     string
 }
 
-func NewIngredients(ingredients []model.Ingredient) Ingredients {
-	return Ingredients{
-		Title:       "Meal Scheduler - Ingredients",
-		Ingredients: ingredients,
-		Active:      "ingredients",
+func NewCategories(categories []model.Category) Categories {
+	return Categories{
+		Title:      "Meal Scheduler - Categories",
+		Categories: categories,
+		Active:     "categories",
 	}
 }
