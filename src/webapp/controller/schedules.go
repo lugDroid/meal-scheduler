@@ -73,7 +73,7 @@ func (s schedules) handleDetail(w http.ResponseWriter, r *http.Request, schedule
 
 func (s schedules) handleDelete(w http.ResponseWriter, r *http.Request, scheduleId int) {
 	if r.Method == http.MethodPost {
-		model.RemoveSchedule(scheduleId)
+		model.DeleteSchedule(scheduleId)
 		http.Redirect(w, r, "/schedules", http.StatusTemporaryRedirect)
 		return
 	}

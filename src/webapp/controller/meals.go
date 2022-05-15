@@ -88,7 +88,7 @@ func (m meals) handleNew(w http.ResponseWriter, r *http.Request) {
 
 func (m meals) handleDelete(w http.ResponseWriter, r *http.Request, mealId int) {
 	if r.Method == http.MethodPost {
-		model.RemoveMeal(mealId)
+		model.DeleteMeal(mealId)
 		http.Redirect(w, r, "/meals", http.StatusTemporaryRedirect)
 		return
 	}
