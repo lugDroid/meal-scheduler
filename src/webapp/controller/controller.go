@@ -16,8 +16,8 @@ func StartUp(templates map[string]*template.Template) {
 	mealsController.detailTemplate = templates["meal-detail.html"]
 	mealsController.deleteTemplate = templates["delete.html"]
 
-	categoriesController.listTemplate = templates["ingredients.html"]
-	categoriesController.detailTemplate = templates["ingredient-detail.html"]
+	categoriesController.listTemplate = templates["categories.html"]
+	categoriesController.detailTemplate = templates["category-detail.html"]
 	categoriesController.deleteTemplate = templates["delete.html"]
 
 	schedulesController.listTemplate = templates["schedules.html"]
