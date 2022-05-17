@@ -14,6 +14,7 @@ type meals struct {
 	listTemplate   *template.Template
 	detailTemplate *template.Template
 	deleteTemplate *template.Template
+	storage        model.DbStorage
 }
 
 func (m meals) registerRoutes() {
@@ -46,7 +47,8 @@ func (m meals) handleMeals(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	meals := model.GetAllMeals()
+	//meals := model.GetAllMeals()
+	meals := m.storage.GetAllMeals()
 	vm := viewmodel.NewMeals(meals)
 	err := m.listTemplate.Execute(w, vm)
 	if err != nil {

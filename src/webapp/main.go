@@ -1,25 +1,47 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"lugdroid/mealsScheduler/webapp/controller"
+	"lugdroid/mealsScheduler/webapp/model"
 	"net/http"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 const port = ":8000"
 
 func main() {
 	templates := populateTemplates()
-	controller.StartUp(templates)
+	db := connectToDatabase()
+	defer db.Close()
+
+	dbStorage := model.NewDbStorage(db)
+	controller.StartUp(templates, dbStorage)
 
 	fmt.Println("Listening on http://localhost" + port)
 	fmt.Println("Press Control+C to stop")
 
 	http.ListenAndServe(port, nil)
+}
+
+func connectToDatabase() *sql.DB {
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatal("Unable to connect to database", err)
+	}
+
+	err = db.Ping()
+	if err != nil {
+		log.Fatal("Connection to database failed", err)
+	}
+
+	return db
 }
 
 func populateTemplates() map[string]*template.Template {

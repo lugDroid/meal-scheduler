@@ -2,6 +2,7 @@ package controller
 
 import (
 	"html/template"
+	"lugdroid/mealsScheduler/webapp/model"
 	"net/http"
 )
 
@@ -11,7 +12,7 @@ var (
 	schedulesController  schedules
 )
 
-func StartUp(templates map[string]*template.Template) {
+func StartUp(templates map[string]*template.Template, storage model.DbStorage) {
 	mealsController.listTemplate = templates["meals.html"]
 	mealsController.detailTemplate = templates["meal-detail.html"]
 	mealsController.deleteTemplate = templates["delete.html"]
@@ -23,6 +24,8 @@ func StartUp(templates map[string]*template.Template) {
 	schedulesController.listTemplate = templates["schedules.html"]
 	schedulesController.detailTemplate = templates["schedule-detail.html"]
 	schedulesController.deleteTemplate = templates["delete.html"]
+
+	mealsController.storage = storage
 
 	mealsController.registerRoutes()
 	categoriesController.registerRoutes()
