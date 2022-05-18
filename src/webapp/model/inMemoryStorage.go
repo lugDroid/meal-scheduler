@@ -5,11 +5,14 @@ import (
 	"time"
 )
 
-func GetAllMeals() []Meal {
+type InMemoryStorage struct {
+}
+
+func (s InMemoryStorage) GetAllMeals() []Meal {
 	return meals
 }
 
-func GetMealById(id int) Meal {
+func (s InMemoryStorage) GetMealById(id int) Meal {
 	for _, m := range meals {
 		if m.Id == id {
 			return m
@@ -29,8 +32,8 @@ func GetRandomMeal(mealType MealType) Meal {
 	}
 }
 
-func UpdateMeal(newMeal Meal) Meal {
-	meal := GetMealById(newMeal.Id)
+func (s InMemoryStorage) UpdateMeal(newMeal Meal) Meal {
+	meal := s.GetMealById(newMeal.Id)
 
 	meal.Name = newMeal.Name
 	meal.Description = newMeal.Description
@@ -47,14 +50,14 @@ func UpdateMeal(newMeal Meal) Meal {
 	return meal
 }
 
-func AddMeal(newMeal Meal) []Meal {
+func (s InMemoryStorage) AddMeal(newMeal Meal) []Meal {
 	newMeal.Id = meals[len(meals)-1].Id + 1
 	meals = append(meals, newMeal)
 
 	return meals
 }
 
-func DeleteMeal(mealId int) {
+func (s InMemoryStorage) DeleteMeal(mealId int) {
 	for i := 0; i < len(meals); i++ {
 		if meals[i].Id == mealId {
 			meals = append(meals[:i], meals[i+1:]...)
@@ -62,11 +65,11 @@ func DeleteMeal(mealId int) {
 	}
 }
 
-func GetAllCategories() []Category {
+func (s InMemoryStorage) GetAllCategories() []Category {
 	return categories
 }
 
-func GetCategoryById(id int) Category {
+func (s InMemoryStorage) GetCategoryById(id int) Category {
 	for _, c := range categories {
 		if c.Id == id {
 			return c
@@ -76,8 +79,8 @@ func GetCategoryById(id int) Category {
 	return Category{}
 }
 
-func UpdateCategory(newCategory Category) Category {
-	category := GetCategoryById(newCategory.Id)
+func (s InMemoryStorage) UpdateCategory(newCategory Category) Category {
+	category := s.GetCategoryById(newCategory.Id)
 
 	category.Name = newCategory.Name
 	category.Description = newCategory.Description
@@ -92,14 +95,14 @@ func UpdateCategory(newCategory Category) Category {
 	return category
 }
 
-func AddCategory(newCategory Category) []Category {
+func (s InMemoryStorage) AddCategory(newCategory Category) []Category {
 	newCategory.Id = categories[len(categories)-1].Id + 1
 	categories = append(categories, newCategory)
 
 	return categories
 }
 
-func DeleteCategory(categoryId int) {
+func (s InMemoryStorage) DeleteCategory(categoryId int) {
 	for i := 0; i < len(categories); i++ {
 		if categories[i].Id == categoryId {
 			categories = append(categories[:i], categories[i+1:]...)
@@ -107,11 +110,11 @@ func DeleteCategory(categoryId int) {
 	}
 }
 
-func GetAllSchedules() []Schedule {
+func (s InMemoryStorage) GetAllSchedules() []Schedule {
 	return schedules
 }
 
-func GetScheduleById(id int) Schedule {
+func (s InMemoryStorage) GetScheduleById(id int) Schedule {
 	for _, s := range schedules {
 		if s.Id == id {
 			return s
@@ -121,8 +124,8 @@ func GetScheduleById(id int) Schedule {
 	return Schedule{}
 }
 
-func UpdateSchedule(newSchedule Schedule) Schedule {
-	schedule := GetScheduleById(newSchedule.Id)
+func (s InMemoryStorage) UpdateSchedule(newSchedule Schedule) Schedule {
+	schedule := s.GetScheduleById(newSchedule.Id)
 
 	schedule.Name = newSchedule.Name
 	schedule.LunchMeals = newSchedule.LunchMeals
@@ -137,7 +140,7 @@ func UpdateSchedule(newSchedule Schedule) Schedule {
 	return schedule
 }
 
-func AddSchedule(newSchedule Schedule) []Schedule {
+func (s InMemoryStorage) AddSchedule(newSchedule Schedule) []Schedule {
 	if len(schedules) == 0 {
 		newSchedule.Id = 0
 	} else {
@@ -148,7 +151,7 @@ func AddSchedule(newSchedule Schedule) []Schedule {
 	return schedules
 }
 
-func DeleteSchedule(scheduleId int) {
+func (s InMemoryStorage) DeleteSchedule(scheduleId int) {
 	for i := 0; i < len(schedules); i++ {
 		if schedules[i].Id == scheduleId {
 			schedules = append(schedules[:i], schedules[i+1:]...)

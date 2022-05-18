@@ -12,7 +12,7 @@ var (
 	schedulesController  schedules
 )
 
-func StartUp(templates map[string]*template.Template, storage model.DbStorage) {
+func StartUp(templates map[string]*template.Template, storage model.Storage) {
 	mealsController.listTemplate = templates["meals.html"]
 	mealsController.detailTemplate = templates["meal-detail.html"]
 	mealsController.deleteTemplate = templates["delete.html"]
@@ -26,6 +26,8 @@ func StartUp(templates map[string]*template.Template, storage model.DbStorage) {
 	schedulesController.deleteTemplate = templates["delete.html"]
 
 	mealsController.storage = storage
+	categoriesController.storage = storage
+	schedulesController.storage = storage
 
 	mealsController.registerRoutes()
 	categoriesController.registerRoutes()

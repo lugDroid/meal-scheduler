@@ -14,6 +14,7 @@ type categories struct {
 	listTemplate   *template.Template
 	detailTemplate *template.Template
 	deleteTemplate *template.Template
+	storage        model.Storage
 }
 
 func (c categories) registerRoutes() {
@@ -45,7 +46,7 @@ func (c categories) handleCategories(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	categories := model.GetAllCategories()
+	categories := c.storage.GetAllCategories()
 	vm := viewmodel.NewCategories(categories)
 	err := c.listTemplate.Execute(w, vm)
 	if err != nil {
@@ -54,11 +55,11 @@ func (c categories) handleCategories(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c categories) handleDetail(w http.ResponseWriter, r *http.Request, categoryId int) {
-	category := model.GetCategoryById(categoryId)
+	category := c.storage.GetCategoryById(categoryId)
 
 	if r.Method == http.MethodPost {
-		parseCategoryData(&category, r)
-		model.UpdateCategory(category)
+		c.parseCategoryData(&category, r)
+		c.storage.UpdateCategory(category)
 		http.Redirect(w, r, "/categories", http.StatusTemporaryRedirect)
 		return
 	}
@@ -70,25 +71,25 @@ func (c categories) handleDetail(w http.ResponseWriter, r *http.Request, categor
 	}
 }
 
-func (i categories) handleNew(w http.ResponseWriter, r *http.Request) {
+func (c categories) handleNew(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		var newCategory model.Category
-		parseCategoryData(&newCategory, r)
-		model.AddCategory(newCategory)
+		c.parseCategoryData(&newCategory, r)
+		c.storage.AddCategory(newCategory)
 		http.Redirect(w, r, "/categories", http.StatusTemporaryRedirect)
 		return
 	}
 
 	vm := viewmodel.NewCategoryDetail(model.Category{})
-	err := i.detailTemplate.Execute(w, vm)
+	err := c.detailTemplate.Execute(w, vm)
 	if err != nil {
-		log.Println("Could not execute template", i.detailTemplate.Name(), err)
+		log.Println("Could not execute template", c.detailTemplate.Name(), err)
 	}
 }
 
 func (c categories) handleDelete(w http.ResponseWriter, r *http.Request, categoryId int) {
 	if r.Method == http.MethodPost {
-		model.DeleteCategory(categoryId)
+		c.storage.DeleteCategory(categoryId)
 		http.Redirect(w, r, "/categories", http.StatusTemporaryRedirect)
 		return
 	}
@@ -96,7 +97,7 @@ func (c categories) handleDelete(w http.ResponseWriter, r *http.Request, categor
 	vm := viewmodel.NewDeleteViewModel()
 	vm.Active = "categories"
 	vm.Content = "category"
-	vm.Name = model.GetCategoryById(categoryId).Name
+	vm.Name = c.storage.GetCategoryById(categoryId).Name
 	vm.ReturnPath = "/categories"
 
 	err := c.deleteTemplate.Execute(w, vm)
@@ -105,18 +106,18 @@ func (c categories) handleDelete(w http.ResponseWriter, r *http.Request, categor
 	}
 }
 
-func parseCategoryData(c *model.Category, r *http.Request) {
+func (c categories) parseCategoryData(category *model.Category, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		log.Print("Could not parse categoryDetail form", err)
 	}
 
-	c.Name = r.Form.Get("category-name")
-	c.Description = r.Form.Get("category-desc")
+	category.Name = r.Form.Get("category-name")
+	category.Description = r.Form.Get("category-desc")
 
 	categoryServings, err := strconv.Atoi(r.Form.Get("category-servings"))
 	if err != nil {
 		log.Println("Could not parse categoryServings", err)
 	}
-	c.ServingsPerWeek = categoryServings
+	category.ServingsPerWeek = categoryServings
 }

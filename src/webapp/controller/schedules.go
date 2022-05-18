@@ -14,6 +14,7 @@ type schedules struct {
 	listTemplate   *template.Template
 	detailTemplate *template.Template
 	deleteTemplate *template.Template
+	storage        model.Storage
 }
 
 func (s schedules) registerRoutes() {
@@ -45,7 +46,7 @@ func (s schedules) handleSchedules(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	schedules := model.GetAllSchedules()
+	schedules := s.storage.GetAllSchedules()
 
 	vm := viewmodel.NewSchedules(schedules)
 	err := s.listTemplate.Execute(w, vm)
@@ -55,16 +56,16 @@ func (s schedules) handleSchedules(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s schedules) handleDetail(w http.ResponseWriter, r *http.Request, scheduleId int) {
-	schedule := model.GetScheduleById(scheduleId)
+	schedule := s.storage.GetScheduleById(scheduleId)
 
 	if r.Method == http.MethodPost {
-		parseFormData(&schedule, r)
-		model.UpdateSchedule(schedule)
+		s.parseFormData(&schedule, r)
+		s.storage.UpdateSchedule(schedule)
 		http.Redirect(w, r, "/schedules", http.StatusTemporaryRedirect)
 		return
 	}
 
-	vm := viewmodel.NewScheduleDetail(schedule, model.GetAllMeals())
+	vm := viewmodel.NewScheduleDetail(schedule, s.storage.GetAllMeals())
 	err := s.detailTemplate.Execute(w, vm)
 	if err != nil {
 		log.Println("Could not execute template", s.detailTemplate.Name(), err)
@@ -73,7 +74,7 @@ func (s schedules) handleDetail(w http.ResponseWriter, r *http.Request, schedule
 
 func (s schedules) handleDelete(w http.ResponseWriter, r *http.Request, scheduleId int) {
 	if r.Method == http.MethodPost {
-		model.DeleteSchedule(scheduleId)
+		s.storage.DeleteSchedule(scheduleId)
 		http.Redirect(w, r, "/schedules", http.StatusTemporaryRedirect)
 		return
 	}
@@ -81,7 +82,7 @@ func (s schedules) handleDelete(w http.ResponseWriter, r *http.Request, schedule
 	vm := viewmodel.NewDeleteViewModel()
 	vm.Active = "schedules"
 	vm.Content = "schedule"
-	vm.Name = model.GetScheduleById(scheduleId).Name
+	vm.Name = s.storage.GetScheduleById(scheduleId).Name
 	vm.ReturnPath = "/schedules"
 
 	err := s.deleteTemplate.Execute(w, vm)
@@ -92,11 +93,11 @@ func (s schedules) handleDelete(w http.ResponseWriter, r *http.Request, schedule
 
 func (s schedules) handleNew(w http.ResponseWriter, r *http.Request) {
 	schedule := model.Schedule{}
-	meals := model.GetAllMeals()
+	meals := s.storage.GetAllMeals()
 
 	if r.Method == http.MethodPost {
-		parseFormData(&schedule, r)
-		model.AddSchedule(schedule)
+		s.parseFormData(&schedule, r)
+		s.storage.AddSchedule(schedule)
 		http.Redirect(w, r, "/schedules", http.StatusTemporaryRedirect)
 		return
 	}
@@ -109,18 +110,18 @@ func (s schedules) handleNew(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func parseFormData(schedule *model.Schedule, r *http.Request) {
+func (s schedules) parseFormData(schedule *model.Schedule, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Could not parse scheduleDetail form", err)
 	}
 
 	schedule.Name = r.Form.Get("schedule-name")
-	schedule.LunchMeals = parseMeals("lunch-meal", r)
-	schedule.DinnerMeals = parseMeals("dinner-meal", r)
+	schedule.LunchMeals = s.parseMeals("lunch-meal", r)
+	schedule.DinnerMeals = s.parseMeals("dinner-meal", r)
 }
 
-func parseMeals(idText string, r *http.Request) [7]model.Meal {
+func (s schedules) parseMeals(idText string, r *http.Request) [7]model.Meal {
 	var mealList [7]model.Meal
 
 	for i := range mealList {
@@ -131,7 +132,7 @@ func parseMeals(idText string, r *http.Request) [7]model.Meal {
 			log.Println("Could not parse mealId", err)
 		}
 
-		mealList[i] = model.GetMealById(mealId)
+		mealList[i] = s.storage.GetMealById(mealId)
 	}
 
 	return mealList

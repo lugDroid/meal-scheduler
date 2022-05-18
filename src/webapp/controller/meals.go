@@ -14,7 +14,7 @@ type meals struct {
 	listTemplate   *template.Template
 	detailTemplate *template.Template
 	deleteTemplate *template.Template
-	storage        model.DbStorage
+	storage        model.Storage
 }
 
 func (m meals) registerRoutes() {
@@ -57,16 +57,17 @@ func (m meals) handleMeals(w http.ResponseWriter, r *http.Request) {
 }
 
 func (m meals) handleDetail(w http.ResponseWriter, r *http.Request, mealId int) {
-	meal := model.GetMealById(mealId)
+	meal := m.storage.GetMealById(mealId)
 
 	if r.Method == http.MethodPost {
-		parseMealData(&meal, r)
-		model.UpdateMeal(meal)
+		m.parseMealData(&meal, r)
+		m.storage.UpdateMeal(meal)
 		http.Redirect(w, r, "/meals", http.StatusTemporaryRedirect)
 		return
 	}
 
 	vm := viewmodel.NewMealDetail(meal)
+	vm.Categories = m.storage.GetAllCategories()
 	err := m.detailTemplate.Execute(w, vm)
 	if err != nil {
 		log.Println("Could not execute template", m.detailTemplate.Name(), err)
@@ -76,12 +77,13 @@ func (m meals) handleDetail(w http.ResponseWriter, r *http.Request, mealId int) 
 func (m meals) handleNew(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		var newMeal model.Meal
-		parseMealData(&newMeal, r)
-		model.AddMeal(newMeal)
+		m.parseMealData(&newMeal, r)
+		m.storage.AddMeal(newMeal)
 		http.Redirect(w, r, "/meals", http.StatusTemporaryRedirect)
 		return
 	}
 	vm := viewmodel.NewMealDetail(model.Meal{})
+	vm.Categories = m.storage.GetAllCategories()
 	err := m.detailTemplate.Execute(w, vm)
 	if err != nil {
 		log.Println("Could not execute template", m.detailTemplate.Name(), err)
@@ -90,7 +92,7 @@ func (m meals) handleNew(w http.ResponseWriter, r *http.Request) {
 
 func (m meals) handleDelete(w http.ResponseWriter, r *http.Request, mealId int) {
 	if r.Method == http.MethodPost {
-		model.DeleteMeal(mealId)
+		m.storage.DeleteMeal(mealId)
 		http.Redirect(w, r, "/meals", http.StatusTemporaryRedirect)
 		return
 	}
@@ -98,7 +100,7 @@ func (m meals) handleDelete(w http.ResponseWriter, r *http.Request, mealId int) 
 	vm := viewmodel.NewDeleteViewModel()
 	vm.Active = "meals"
 	vm.Content = "meal"
-	vm.Name = model.GetMealById(mealId).Name
+	vm.Name = m.storage.GetMealById(mealId).Name
 	vm.ReturnPath = "/meals"
 
 	err := m.deleteTemplate.Execute(w, vm)
@@ -107,7 +109,7 @@ func (m meals) handleDelete(w http.ResponseWriter, r *http.Request, mealId int) 
 	}
 }
 
-func parseMealData(meal *model.Meal, r *http.Request) {
+func (m meals) parseMealData(meal *model.Meal, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println("Could not parse mealDetail form", err)
@@ -120,7 +122,7 @@ func parseMealData(meal *model.Meal, r *http.Request) {
 	if err != nil {
 		log.Println("Could not parse categoryId", err)
 	}
-	meal.Category = model.GetCategoryById(categoryId)
+	meal.Category = m.storage.GetCategoryById(categoryId)
 
 	mealServings, err := strconv.Atoi(r.Form.Get("meal-servings"))
 	if err != nil {
