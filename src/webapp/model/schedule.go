@@ -1,5 +1,10 @@
 package model
 
+import (
+	"math/rand"
+	"time"
+)
+
 type Schedule struct {
 	Id          int
 	UserId      string
@@ -9,37 +14,40 @@ type Schedule struct {
 }
 
 func (s *Schedule) PopulateMeals(meals []Meal) {
-	populate(&s.LunchMeals, Lunch)
-	populate(&s.DinnerMeals, Dinner)
+	s.LunchMeals = populate(meals, Lunch)
+	s.DinnerMeals = populate(meals, Dinner)
 }
 
-func populate(list *[7]Meal, mealType MealType) {
+func populate(allMeals []Meal, mealType MealType) [7]Meal {
 	i := 0
+	var meals [7]Meal
 
 out:
-	for i < len(*list) {
-		selectedMeal := GetRandomMeal(mealType)
-		for _, m := range *list {
+	for i < len(meals) {
+		selectedMeal := getRandomMeal(allMeals, mealType)
+		for _, m := range meals {
 			if m.Name == selectedMeal.Name {
 				continue out
 			}
 		}
 
-		usedAlready := getCategoryUses(selectedMeal.Category, *list)
+		usedAlready := getCategoryUses(selectedMeal.Category, meals)
 		if usedAlready >= selectedMeal.Category.ServingsPerWeek {
 			continue
 		}
 
 		// add the meal number-of-servings times
 		for j := 0; j < selectedMeal.Servings; j++ {
-			(*list)[i] = selectedMeal
+			meals[i] = selectedMeal
 			i++
 
-			if i == len(*list) {
+			if i == len(meals) {
 				break
 			}
 		}
 	}
+
+	return meals
 }
 
 func getCategoryUses(c Category, list [7]Meal) int {
@@ -52,4 +60,14 @@ func getCategoryUses(c Category, list [7]Meal) int {
 	}
 
 	return count
+}
+
+func getRandomMeal(allMeals []Meal, mealType MealType) Meal {
+	for {
+		rand.Seed((time.Now().UnixNano()))
+		index := rand.Intn(len(allMeals))
+		if allMeals[index].Type == mealType || allMeals[index].Type == Both {
+			return allMeals[index]
+		}
+	}
 }

@@ -21,8 +21,10 @@ func main() {
 	db := connectToDatabase()
 	defer db.Close()
 
-	//dbStorage := model.NewDbStorage(db)
-	controller.StartUp(templates, model.InMemoryStorage{})
+	dbStorage := model.NewDbStorage(db)
+	controller.StartUp(templates, &dbStorage)
+
+	//controller.StartUp(templates, model.InMemoryStorage{})
 
 	fmt.Println("Listening on http://localhost" + port)
 	fmt.Println("Press Control+C to stop")
