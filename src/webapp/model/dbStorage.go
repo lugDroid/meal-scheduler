@@ -60,6 +60,36 @@ func (s *DbStorage) GetMealById(mealId int) Meal {
 	return m
 }
 
+func (s *DbStorage) GetMealsByType(mealType MealType) []Meal {
+
+	rows, err := s.db.Query(`
+		SELECT id, name, description, servings, type, category_id
+		FROM meal
+		WHERE type = $1 OR type = 3
+		ORDER BY name
+	`, mealType)
+	if err != nil {
+		fmt.Println("GetMealsById query failed", err)
+	}
+	defer rows.Close()
+
+	var meals []Meal
+	for rows.Next() {
+		m := Meal{}
+		var categoryId int
+
+		err := rows.Scan(&m.Id, &m.Name, &m.Description, &m.Servings, &m.Type, &categoryId)
+		if err != nil {
+			fmt.Println("Error scanning GetMealsByType query results", err)
+		}
+		m.Category = s.GetCategoryById(categoryId)
+
+		meals = append(meals, m)
+	}
+
+	return meals
+}
+
 func (s *DbStorage) UpdateMeal(m Meal) Meal {
 	_, err := s.db.Exec(`
 		UPDATE meal

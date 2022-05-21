@@ -3,6 +3,7 @@ package model
 type Storage interface {
 	GetAllMeals() []Meal
 	GetMealById(id int) Meal
+	GetMealsByType(mealType MealType) []Meal
 	UpdateMeal(newMeal Meal) Meal
 	AddMeal(newMeal Meal) Meal
 	DeleteMeal(mealId int)
