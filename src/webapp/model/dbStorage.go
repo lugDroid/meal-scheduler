@@ -280,7 +280,7 @@ func (s *DbStorage) DeleteSchedule(scheduleId int) {
 	}
 
 	_, err = s.db.Exec(`
-		DELETE FROM category
+		DELETE FROM schedule
 		WHERE id = $1
 	`, scheduleId)
 	if err != nil {
