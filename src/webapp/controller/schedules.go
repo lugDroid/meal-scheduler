@@ -65,7 +65,9 @@ func (s schedules) handleDetail(w http.ResponseWriter, r *http.Request, schedule
 		return
 	}
 
-	vm := viewmodel.NewScheduleDetail(schedule, s.storage.GetAllMeals())
+	vm := viewmodel.NewScheduleDetail(schedule)
+	vm.LunchMeals = s.storage.GetMealsByType(model.Lunch)
+	vm.DinnerMeals = s.storage.GetMealsByType(model.Dinner)
 	err := s.detailTemplate.Execute(w, vm)
 	if err != nil {
 		log.Println("Could not execute template", s.detailTemplate.Name(), err)
@@ -103,7 +105,9 @@ func (s schedules) handleNew(w http.ResponseWriter, r *http.Request) {
 	}
 
 	schedule.PopulateMeals(meals)
-	vm := viewmodel.NewScheduleDetail(schedule, meals)
+	vm := viewmodel.NewScheduleDetail(schedule)
+	vm.LunchMeals = s.storage.GetMealsByType(model.Lunch)
+	vm.DinnerMeals = s.storage.GetMealsByType(model.Dinner)
 	err := s.detailTemplate.Execute(w, vm)
 	if err != nil {
 		log.Println("Could not execute template", s.detailTemplate.Name(), err)

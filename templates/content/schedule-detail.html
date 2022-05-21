@@ -11,7 +11,7 @@
             {{range $i, $m := .Schedule.LunchMeals}}
                 <div class="form-group">
                     <select name="lunch-meal-{{$i}}" id="" class="form-select">
-                        {{range $.Meals}}
+                        {{range $.LunchMeals}}
                         <option value="{{.Id}}" {{if eq .Id $m.Id}}selected{{end}}>{{.Name}}</option>
                         {{end}}
                     </select>
@@ -23,7 +23,7 @@
             {{range $i, $m := .Schedule.DinnerMeals}}
                 <div class="form-group">
                     <select name="dinner-meal-{{$i}}" id="" class="form-select">
-                        {{range $.Meals}}
+                        {{range $.DinnerMeals}}
                         <option value="{{.Id}}" {{if eq .Id $m.Id}}selected{{end}}>{{.Name}}</option>
                         {{end}}
                     </select>
