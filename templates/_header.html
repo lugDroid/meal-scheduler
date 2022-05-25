@@ -1,12 +1,13 @@
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom box-shadow mb-3">
         <div class="container">
             <a class="navbar-brand" href="/meals">MealScheduler</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+            <div class="collapse navbar-collapse" id="main-navbar">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
                         <a class='nav-link {{if eq .Active "meals"}}active{{end}}' href="/meals">Meals</a>
@@ -18,7 +19,6 @@
                         <a class='nav-link {{if eq .Active "schedules"}}active{{end}}' href="/schedules">Schedules</a>
                     </li>
                 </ul>
-                <!-- <partial name="_LoginPartial" /> -->
             </div>
         </div>
     </nav>
