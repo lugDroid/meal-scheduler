@@ -1,3 +1,4 @@
 .vscode/
 *exampleData.go
 src/webapp/__debug_bin
+.DS_Store
